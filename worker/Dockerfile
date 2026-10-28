@@ -25,4 +25,9 @@ RUN dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no
 FROM mcr.microsoft.com/dotnet/runtime:7.0
 WORKDIR /app
 COPY --from=build /app .
+
+# Create an unprivileged user and switch to it
+RUN useradd --system --no-create-home --shell /usr/sbin/nologin appuser
+USER appuser
+
 ENTRYPOINT ["dotnet", "Worker.dll"]
